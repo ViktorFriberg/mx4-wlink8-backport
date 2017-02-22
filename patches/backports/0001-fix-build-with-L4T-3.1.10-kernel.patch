@@ -1,0 +1,81 @@
+From 54f9f18100ace343a41714f6b951c060a6ca6f70 Mon Sep 17 00:00:00 2001
+From: Mirza Krak <mirza.krak@hostmobility.com>
+Date: Tue, 21 Feb 2017 15:44:21 +0100
+Subject: [PATCH 1/1] fix build with L4T 3.1.10 kernel
+
+---
+ backport/backport-include/linux/export.h |  2 +-
+ backport/compat/compat-3.6.c             | 13 -------------
+ backport/compat/compat-3.8.c             |  4 ++--
+ backport/defconfigs/wl18xx               |  2 +-
+ 4 files changed, 4 insertions(+), 17 deletions(-)
+
+diff --git a/backport/backport-include/linux/export.h b/backport/backport-include/linux/export.h
+index 3686197..ab73781 100644
+--- a/backport/backport-include/linux/export.h
++++ b/backport/backport-include/linux/export.h
+@@ -3,7 +3,7 @@
+ 
+ #include <linux/version.h>
+ 
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,0))
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,1,0))
+ #include_next <linux/export.h>
+ #else
+ #ifndef pr_fmt
+diff --git a/backport/compat/compat-3.6.c b/backport/compat/compat-3.6.c
+index c82bfb8..f3a1f89 100644
+--- a/backport/compat/compat-3.6.c
++++ b/backport/compat/compat-3.6.c
+@@ -148,16 +148,3 @@ int sg_alloc_table_from_pages(struct sg_table *sgt,
+ }
+ EXPORT_SYMBOL_GPL(sg_alloc_table_from_pages);
+ 
+-/* whoopsie ! */
+-#ifndef CONFIG_COMMON_CLK
+-int clk_enable(struct clk *clk)
+-{
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(clk_enable);
+-
+-void clk_disable(struct clk *clk)
+-{
+-}
+-EXPORT_SYMBOL_GPL(clk_disable);
+-#endif
+diff --git a/backport/compat/compat-3.8.c b/backport/compat/compat-3.8.c
+index a318c15..f29a644 100644
+--- a/backport/compat/compat-3.8.c
++++ b/backport/compat/compat-3.8.c
+@@ -422,7 +422,7 @@ void prandom_bytes(void *buf, int bytes)
+ 	int i;
+ 
+ 	for (i = 0; i < round_down(bytes, sizeof(u32)); i += sizeof(u32)) {
+-		u32 random = random32();
++		u32 random = prandom_u32();
+ 		int j;
+ 
+ 		for (j = 0; j < sizeof(u32); j++) {
+@@ -432,7 +432,7 @@ void prandom_bytes(void *buf, int bytes)
+ 	}
+ 
+ 	if (i < bytes) {
+-		u32 random = random32();
++		u32 random = prandom_u32();
+ 
+ 		for (; i < bytes; i++) {
+ 			p[i] = random;
+diff --git a/backport/defconfigs/wl18xx b/backport/defconfigs/wl18xx
+index 1bb99b2..b349078 100644
+--- a/backport/defconfigs/wl18xx
++++ b/backport/defconfigs/wl18xx
+@@ -12,4 +12,4 @@ CPTCFG_WL12XX=m
+ CPTCFG_WL18XX=m
+ CPTCFG_WLCORE=m
+ CPTCFG_WLCORE_SDIO=m
+-# CPTCFG_WILINK_PLATFORM_DATA is not set
++CPTCFG_WILINK_PLATFORM_DATA=y
+-- 
+2.1.4
+

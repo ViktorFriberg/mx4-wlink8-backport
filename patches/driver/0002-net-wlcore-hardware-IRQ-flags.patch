@@ -1,0 +1,32 @@
+From 15d3562a960cd1b4adde0ec851153908e348e751 Mon Sep 17 00:00:00 2001
+From: Mirza Krak <mirza.krak@hostmobility.com>
+Date: Tue, 21 Feb 2017 15:50:57 +0100
+Subject: [PATCH 2/3] net: wlcore: hardware IRQ flags
+
+We will not be providing proper platform data to the driver and hence we
+need to hard-code it in to the driver instead of setting up flags in
+platform data.
+
+Signed-off-by: Mirza Krak <mirza.krak@hostmobility.com>
+---
+ drivers/net/wireless/ti/wlcore/sdio.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ti/wlcore/sdio.c b/drivers/net/wireless/ti/wlcore/sdio.c
+index d022845..6946445 100644
+--- a/drivers/net/wireless/ti/wlcore/sdio.c
++++ b/drivers/net/wireless/ti/wlcore/sdio.c
+@@ -332,8 +332,8 @@ static int wl1271_probe(struct sdio_func *func,
+ 	memset(res, 0x00, sizeof(res));
+ 
+ 	res[0].start = irq;
+-	res[0].flags = IORESOURCE_IRQ |
+-		       irqd_get_trigger_type(irq_get_irq_data(irq));
++	res[0].flags = IORESOURCE_IRQ | IRQF_TRIGGER_RISING |
++				IRQF_TRIGGER_FALLING;
+ 	res[0].name = "irq";
+ 
+ 	ret = platform_device_add_resources(glue->core, res, ARRAY_SIZE(res));
+-- 
+2.1.4
+
