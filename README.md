@@ -140,3 +140,9 @@ Start the build
 
 Output of build can be found in `build-utilites/fs` (if ROOTFS=DEFAULT) and `build-utilites/outputs`. The file in `build-utilites/outputs` you can transfer to the device and unpack in `/`
 
+
+## Useful links (where I got the most of my information)
+
+- http://processors.wiki.ti.com/index.php/WL18xx_Platform_Integration_Guide
+- http://processors.wiki.ti.com/index.php/WL18xx_System_Build_Scripts
+- http://software-dl.ti.com/ecs/WiLink8/SP/latest/index_FDS.html
