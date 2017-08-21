@@ -1,24 +1,24 @@
-From cc5fff8588125454258c6d45e54fac1b4d72eeda Mon Sep 17 00:00:00 2001
+From 4a414c382efd4fb85607ef8b72d0c14a9d2ef4c4 Mon Sep 17 00:00:00 2001
 From: Mirza Krak <mirza.krak@hostmobility.com>
 Date: Tue, 21 Feb 2017 15:52:28 +0100
-Subject: [PATCH 3/3] net: wlcore: add an hard-coded interrupt number
+Subject: [PATCH 1/1] net: wlcore: add an hard-coded interrupt number
 
 We have no means to pass platform data to the driver, so for now we
 hardcode the IRQ number.
 
-NOTE! The irq number is only valid on Colibri T20 and represents
-TEGRA_GPIO_PBB2. If SOC or pin is changed this needs to be adjusted.
+NOTE! The irq number is only valid on Colibri T30 and represents
+TEGRA_GPIO_PDD7. If SOC or pin is changed this needs to be adjusted.
 
 Signed-off-by: Mirza Krak <mirza.krak@hostmobility.com>
 ---
- drivers/net/wireless/ti/wlcore/sdio.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ti/wlcore/sdio.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/wireless/ti/wlcore/sdio.c b/drivers/net/wireless/ti/wlcore/sdio.c
-index 6946445..a7ceac4 100644
+index 6946445..c0b36b5 100644
 --- a/drivers/net/wireless/ti/wlcore/sdio.c
 +++ b/drivers/net/wireless/ti/wlcore/sdio.c
-@@ -257,7 +257,14 @@ static int wlcore_probe_of(struct device *dev, int *irq,
+@@ -257,7 +257,15 @@ static int wlcore_probe_of(struct device *dev, int *irq,
  static int wlcore_probe_of(struct device *dev, int *irq,
  			   struct wlcore_platdev_data *pdev_data)
  {
@@ -26,14 +26,25 @@ index 6946445..a7ceac4 100644
 +	/* This is a hard-coded value sine we do not yet support to pass
 +	   platform data to the driver.
 +
-+	   410 is the equivalence of TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PBB2)
++	   463 is the equivalence of TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PDD7)
++           on a MX-4 T30
 +	*/
-+	*irq = 410;
++	*irq = 463;
 +
 +	return 0;
  }
  #endif
  
+@@ -332,8 +340,7 @@ static int wl1271_probe(struct sdio_func *func,
+ 	memset(res, 0x00, sizeof(res));
+ 
+ 	res[0].start = irq;
+-	res[0].flags = IORESOURCE_IRQ | IRQF_TRIGGER_RISING |
+-				IRQF_TRIGGER_FALLING;
++	res[0].flags = IORESOURCE_IRQ | IRQF_TRIGGER_RISING;
+ 	res[0].name = "irq";
+ 
+ 	ret = platform_device_add_resources(glue->core, res, ARRAY_SIZE(res));
 -- 
 2.1.4
 
